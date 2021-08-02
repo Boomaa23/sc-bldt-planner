@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SimCity Buildit Planner</title>
+        <link type="text/css" rel="stylesheet" href="main.css">
+        <link type="image/png" rel="icon" href="favicon.png">
+    </head>
+    <body>
+        <div class="header center">SimCity Buildit Planner</div>
+        <table class="content-table">
+            <tr>
+                <td class="bldg-queue section">
+                    <div class="subheader center">Building Queue</div>
+                </td>
+                <td class="storage section center">
+                    <div class="subheader">Storage</div>
+                    <input type="text" name="storage-in" id="storage-in">
+                    <input type="number" name="storage-qty-in" id="storage-qty-in">
+                    <button type="submit" id="storage-submit" onclick="storeItem()">+</button>
+                    <div id="storage-out" class="left"></div>
+                </td>
+            </tr><tr>
+                <td class="crafting section center">
+                    <div class="subheader">Crafting Lookup</div>
+                    <input type="text" name="craft-in" id="craft-in">
+                    <button type="submit"id="search-submit" onclick="searchItem()">Search</button>
+                    <table id="craft-out" class="center"></table>
+                </td>
+            </tr>
+        </table>
+
+        <div class="templates hidden">
+            <template id="item-navheader">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Time</th>
+                    <th>Value</th>
+                    <th>Level</th>
+                    <th></th>
+                </tr>
+            </template>
+            <template id="item-template">
+                <tr>
+                    <td><img src="icons/" height="32" width="32"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </template>
+        </div>
+    </body>
+    <script type="text/javascript" src="frontend.js"></script>
+</html>
