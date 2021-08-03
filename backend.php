@@ -13,33 +13,65 @@ if (isset($reqEndpoint) && isset($reqData)) {
         $reqData = explode(",", $reqData);
     }
     switch ($reqEndpoint) {
+        case "storage/get":
+            getStoredItems();
+            break;
         case "storage/add":
             storeItem($reqData);
-            break;
-        case "storage/remove":
-            removeItem($reqData);
             break;
         case "items/search":
             searchItem($reqData);
             break;
     }
-    // println($reqEndpoint);
-    // if (is_array($reqData)) {
-    //     $reqData = implode(", ", $reqData);
-    // }
-    // println($reqData);
+}
+
+function getStoredItems() {
+    $storage = loadJson(STORAGE_PATH);
+    print(json_encode($storage));
 }
 
 function storeItem($data) {
-    $storage = loadJson(STORAGE_PATH);
-    $storage[$data[0]] = (int) $data[1];
-    saveJson(STORAGE_PATH, $storage);
-}
+    $items = loadJson(ITEMS_PATH);
+    $mtlExists = false;
+    foreach ($items as $item) {
+        if (isset($item[$data[0]])) {
+            $mtlExists = true;
+            break;
+        }
+    }
+    if ($mtlExists) {
+        $storage = loadJson(STORAGE_PATH);
+        if (!isset($data[1])) {
+            $data[1] = 1;
+        }
+        if (isset($storage[$data[0]])) {
+            if ($data[1] === "+") {
+                $storage[$data[0]]++;
+            } else if ($data[1] === "-") {
+                $storage[$data[0]]--;
+            } else {
+                $storage[$data[0]] = (int) $data[1];
+            }
+            if ($storage[$data[0]] === 0) {
+                unset($storage[$data[0]]);
+            }
+        } else if ($data[1] === "+") {
+            $storage[$data[0]] = 1;
+        } else {
+            $storage[$data[0]] = (int) $data[1];
+        }
+        saveJson(STORAGE_PATH, $storage);
 
-function removeItem($name) {
-    $storage = loadJson(STORAGE_PATH);
-    unset($storage[$name]);
-    saveJson(STORAGE_PATH, $storage);
+        $prData = [];
+        if (isset($storage[$data[0]])) {
+            $prData[$data[0]] = $storage[$data[0]];
+        } else {
+            $prData[$data[0]] = 0;
+        }
+        print(json_encode($prData));
+    } else {
+        print("false");
+    }
 }
 
 function searchItem($name) {
@@ -48,7 +80,7 @@ function searchItem($name) {
     foreach ($allItems as $bldgName => $mtls) {
         foreach ($mtls as $mtlName => $material) {
             if (str_contains(strtolower($mtlName), strtolower($name))) {
-                $matchedItems[$mtlName] = $material;
+                $matchedItems[$bldgName][$mtlName] = $material;
             }
         }
     }
@@ -65,10 +97,5 @@ function loadJson($path) {
 
 function saveJson($path, $data) {
     file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT));
-}
-
-function println($str) {
-    print($str);
-    print("\n");
 }
 ?>

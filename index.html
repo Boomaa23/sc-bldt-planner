@@ -15,32 +15,34 @@
                 <td class="storage section center">
                     <div class="subheader">Storage</div>
                     <input type="text" name="storage-in" id="storage-in">
-                    <input type="number" name="storage-qty-in" id="storage-qty-in">
-                    <button type="submit" id="storage-submit" onclick="storeItem()">+</button>
-                    <div id="storage-out" class="left"></div>
+                    <input type="number" name="storage-qty-in" id="storage-qty-in" value="1">
+                    <button type="submit" id="storage-submit" onclick="storeItem()">Add</button>
+                    <table id="storage-out" class="center out"></table>
                 </td>
             </tr><tr>
                 <td class="crafting section center">
                     <div class="subheader">Crafting Lookup</div>
                     <input type="text" name="craft-in" id="craft-in">
                     <button type="submit"id="search-submit" onclick="searchItem()">Search</button>
-                    <table id="craft-out" class="center"></table>
+                    <table id="craft-out" class="center out"></table>
                 </td>
             </tr>
         </table>
 
         <div class="templates hidden">
-            <template id="item-navheader">
+            <template id="craft-navheader">
                 <tr>
                     <th></th>
                     <th>Name</th>
                     <th>Time</th>
-                    <th>Value</th>
+                    <th>Unit <br />Value</th>
+                    <th>Value/<br />min</th>
                     <th>Level</th>
+                    <th>Building</th>
                     <th></th>
                 </tr>
             </template>
-            <template id="item-template">
+            <template id="craft-row">
                 <tr>
                     <td><img src="icons/" height="32" width="32"></td>
                     <td></td>
@@ -48,6 +50,26 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </template>
+            <template id="storage-navheader">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Qty</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </template>
+            <template id="storage-row">
+                <tr>
+                    <td><img src="icons/" height="32" width="32"></td>
+                    <td></td>
+                    <td></td>
+                    <td><button onclick="changeItemQty('+')">+</button></td>
+                    <td><button onclick="changeItemQty('-')">-</button></td>
                 </tr>
             </template>
         </div>

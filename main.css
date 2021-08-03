@@ -28,7 +28,21 @@ body {
 }
 
 .content-table {
-    width: 100%
+    width: 100%;
+}
+
+.content-table td, .content-table th {
+    padding: 10px;
+}
+
+.out {
+    margin-top: 10px;
+    border-collapse: collapse;
+    vertical-align: middle;
+}
+
+.out tr {
+    border: 2px solid grey;
 }
 
 .section {
