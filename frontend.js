@@ -128,6 +128,47 @@ function searchItemCallback(respText) {
     }
 }
 
+function sortItems(tableId, colIdx, desc) {
+    var table = document.getElementById(tableId);
+    var evalNext = true;
+
+    while (evalNext) {
+        evalNext = false;
+        var rows = table.rows;
+        for (var i = 1; i < rows.length - 1; i++) {
+            var doSwitch = false;
+            var a = rows[i].getElementsByTagName("td")[colIdx].innerText.toLowerCase();
+            var b = rows[i + 1].getElementsByTagName("td")[colIdx].innerText.toLowerCase();
+            const ai = parseFloat(a);
+            const bi = parseFloat(b);
+            if (!isNaN(ai) && !isNaN(bi)) {
+                a = ai;
+                b = bi;
+            }
+            if ((!desc && a > b) || (desc && a < b)) {
+                doSwitch = true;
+                break;
+            }
+        }
+        if (doSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            evalNext = true;
+        }
+    }
+
+    var headerRow = table.rows[0].querySelectorAll("a");
+    for (var i = 0; i < headerRow.length; i++) {
+        var header = headerRow[i];
+        headerRow[i].innerText = headerRow[i].innerText.substring(0, headerRow[i].innerText.length - 1) + String.fromCharCode(9654);
+        headerRow[i].setAttribute("href", headerRow[i].getAttribute("href").replace("true", "false"));
+    }
+
+    var header = table.rows[0].querySelectorAll("a")[colIdx - 1];
+    header.innerText = header.innerText.substring(0, header.innerText.length - 1) + (desc ? String.fromCharCode(9650) : String.fromCharCode(9660));
+    var jsCall = header.getAttribute("href");
+    header.setAttribute("href", desc ? jsCall.replace("true", "false") : jsCall.replace("false", "true"));
+}
+
 function backendRequest(endpoint, data, callback = null, doLog = true) {
     var xhr = new XMLHttpRequest();
     var url = "backend.php?endpoint=" + encodeURIComponent(endpoint);

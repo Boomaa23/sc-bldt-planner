@@ -48,3 +48,8 @@ body {
 .section {
     width: 50%;
 }
+
+.head-link {
+    text-decoration: none;
+    color: black;
+}
