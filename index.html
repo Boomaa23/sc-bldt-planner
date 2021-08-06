@@ -12,7 +12,7 @@
                 <td class="bldg-queue section center">
                     <div class="subheader center">Building Queue</div>
                     <input type="text" name="bldg-mtl-in" id="bldg-mtl-in">
-                    <input type="number" name="bldg-qty-in" id="bldg-qty-in" value="1">
+                    <input type="number" name="bldg-qty-in" id="bldg-qty-in" value="1" />
                     <button type="submit" id="bldg-mtl-add" onclick="addBldgMtl()">Add Material</button>
                     <button type="submit" id="bldg-submit" onclick="queueBldg()">Queue Building</button>
                     <table id="bldg-staging" class="center out"></table>
@@ -40,17 +40,28 @@
                 <tr>
                     <th></th>
                     <th><a href="javascript:sortItems('craft-out', 1, false);" class="head-link">Name&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 2, false);" class="head-link">Time&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 3, false);" class="head-link">Unit <br />Value&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 4, false);" class="head-link">Value/<br />min&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 5, false);" class="head-link">Level&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 6, false);" class="head-link">Building&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 2, false);" class="head-link">Time (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 3, false);" class="head-link">Time (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 4, false);" class="head-link">Time (Max)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 5, true);" class="head-link">Value <br />(Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 6, true);" class="head-link">Value <br />(Good)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 7, true);" class="head-link">Value/<br />min (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 8, true);" class="head-link">Value/<br />min (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 9, true);" class="head-link">Value/<br />min (Max)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 10, false);" class="head-link">Level (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 11, false);" class="head-link">Level (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems('craft-out', 12, false);" class="head-link">Building&#9654</a></th>
                     <th></th>
                 </tr>
             </template>
             <template id="craft-row">
-                <tr>
+                <tr onclick="expandCraft(this)">
                     <td><img src="icons/" height="32" width="32"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

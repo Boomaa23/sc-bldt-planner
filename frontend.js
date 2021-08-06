@@ -1,3 +1,30 @@
+class MatStats {
+    timeMin = 0;
+    timeMax = 0;
+    goodValue = 0;
+    levelMin = 0;
+
+    addOther(other) {
+        this.timeMin += other.timeMin;
+        this.timeMax += other.timeMax;
+        this.goodValue -= other.goodValue;
+        this.levelMin = Math.min(this.levelMin, other.levelMin);
+    }
+
+    multQty(qty) {
+        this.timeMin *= qty;
+        this.timeMax *= qty;
+        this.goodValue *= qty;
+    }
+
+    isBlank() {
+        return this.timeMin === 0 && 
+            this.timeMax === 0 && 
+            this.goodValue === 0 && 
+            this.levelMin === 0;
+    } 
+}
+
 document.getElementById("storage-in").onkeypress = function(e) {
     if (e.key === "Enter") {
         document.getElementById("storage-submit").click();
@@ -27,10 +54,23 @@ document.getElementById("craft-in").onkeyup = function(e) {
 }
 
 window.onload = function() {
+    backendRequest("items/search", "", initCrafting);
     backendRequest("storage/get", "", function(respText) {
         storeItemCallback(respText);
         backendRequest("queue/get", "", queueBldgCallback);
     });
+}
+
+function initCrafting(respText) {
+    var craftOut = document.getElementById("craft-out");
+    const navHeader = document.getElementById("craft-navheader").content;
+    craftOut.appendChild(navHeader.cloneNode(true))
+    searchItemCallback(respText);
+    craftOut = document.getElementById("craft-out");
+    var rows = craftOut.querySelectorAll("tr");
+    for (var k = 0; k < rows.length; k++) {
+        rows[k].style = "display: none;";
+    }
 }
 
 function storeItem() {
@@ -112,13 +152,20 @@ function changeItemQty(dir, mtl) {
 }
 
 function searchItem() {
+    var craftOut = document.getElementById("craft-out");
+    var rows = craftOut.querySelectorAll("tr");
+    rows[0].style = "display: default;";
     const itemName = document.getElementById("craft-in").value;
     backendRequest("items/search", itemName, searchItemCallback);
 }
 
 function searchItemCallback(respText) {
     var craftOut = document.getElementById("craft-out");
-    craftOut.innerText = "";
+    var rows = craftOut.querySelectorAll("tr");
+
+    for (var k = 1; k < rows.length; k++) {
+        rows[k].style = "display: none;";
+    }
 
     if (respText === "false") {
         return;
@@ -127,31 +174,157 @@ function searchItemCallback(respText) {
     const respJson = JSON.parse(respText);
     const respKeys = Object.keys(respJson);
 
-    const navHeader = document.getElementById("craft-navheader").content;
-    craftOut.appendChild(navHeader.cloneNode(true))
-
     const itemTemplate = document.getElementById("craft-row").content;
     for (var i = 0; i < respKeys.length; i++) {
         const mtlVals = respJson[respKeys[i]];
         const mtlKeys = Object.keys(mtlVals);
         for (var j = 0; j < mtlKeys.length; j++) {
+            var inTable = false;
+            for (var k = 1; k < rows.length; k++) {
+                if (rows[k].cells[1].innerText === mtlKeys[j]) {
+                    rows[k].style = "display: default;";
+                    inTable = true;
+                    break;
+                }
+            }
+            if (inTable) {
+                continue;
+            }
             var itemOut = itemTemplate.cloneNode(true);
             itemOut.querySelector("img").src = "data/icons/" + mtlKeys[j].toLowerCase().split(' ').join('') + ".png";
             
             const mtlVal = mtlVals[mtlKeys[j]];
+            var mats = mtlVal.mats;
+            if (typeof mats !== "undefined") {
+                mats = JSON.stringify(mats);
+                itemOut.querySelector("tr").setAttribute("mats", mats);
+            }
+
             var itemCols = itemOut.querySelectorAll("td");
             itemCols[1].innerText = mtlKeys[j];
             itemCols[2].innerText = mtlVal.time;
-            itemCols[3].innerText = mtlVal.value;
-            var gpm = mtlVal.value / mtlVal.time;
-            gpm = + gpm.toFixed(2);
-            itemCols[4].innerText = gpm;
-            itemCols[5].innerText = mtlVal.level;
-            itemCols[6].innerText = respKeys[i];
+            
+            itemCols[5].innerText = mtlVal.value;
+            itemCols[10].innerText = mtlVal.level;
+            itemCols[12].innerText = respKeys[i];
             
             craftOut.appendChild(itemOut);
+            rows = craftOut.querySelectorAll("tr");
         }
     }
+
+    rows = craftOut.querySelectorAll("tr");
+    for (var i = 1; i < rows.length; i++) {
+        var itemCols = rows[i].cells;
+        var matStats = simpleMatsSearch(itemCols[1].innerText, rows);
+        const value = parseFloat(itemCols[5].innerText);
+        const time = parseFloat(itemCols[2].innerText);
+        
+        itemCols[3].innerText = matStats.timeMin;
+        itemCols[4].innerText = matStats.timeMax;
+        itemCols[6].innerText = matStats.goodValue;
+
+        var gpmUnit = value / time;
+        gpmUnit = + gpmUnit.toFixed(2);
+        itemCols[7].innerText = gpmUnit;
+        var gpmMin = value / matStats.timeMin;
+        gpmMin = + gpmMin.toFixed(2);
+        itemCols[8].innerText = gpmMin;
+        var gpmMax = value / matStats.timeMax;
+        gpmMax = + gpmMax.toFixed(2);
+
+        itemCols[9].innerText = gpmMax;
+        itemCols[11].innerText = matStats.levelMin;
+    }
+}
+
+function expandCraft(row) {
+    const rows = row.parentNode.querySelectorAll("tr");
+    const targetItemName = row.cells[1].innerText;
+
+    for (var i = 1; i < rows.length; i++) {
+        rows[i].remove();
+    }
+
+    const allMats = detailedMatsSearch(targetItemName, rows).reverse();
+    console.log(allMats);
+    var craftOut = document.getElementById("craft-out");
+    for (var i = 0; i < allMats.length; i++) {
+        craftOut.appendChild(allMats[i].cloneNode(true));
+    }
+}
+
+function detailedMatsSearch(searchMtl, rows) {
+    var mtls = [];
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].cells[1].innerText === searchMtl) {
+            var singleMats = rows[i].getAttribute("mats");
+            if (singleMats !== null) {
+                var searchMat = JSON.parse(singleMats);
+                var searchMatKeys = Object.keys(searchMat);
+                var searchMatVals = Object.values(searchMat);
+                for (var j = 0; j < searchMatKeys.length; j++) {
+                    var recurseMats = detailedMatsSearch(searchMatKeys[j], rows);
+                    for (var k = 0; k < searchMatVals[j]; k++) {
+                        for (var l = 0; l < recurseMats.length; l++) {
+                            mtls.push(recurseMats[l]);
+                            console.log(mtls.length);
+                        }
+                    }
+                }
+            }
+            mtls.push(rows[i]);
+        }
+    }
+
+    if (mtls.length === 0) {
+        return;
+    }
+
+    return mtls;
+}
+
+function simpleMatsSearch(searchMtl, rows) {
+    var mtlStats = new MatStats();
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].cells[1].innerText === searchMtl) {
+            var singleMats = rows[i].getAttribute("mats");
+            if (singleMats !== null) {
+                var searchMat = JSON.parse(singleMats);
+                var searchMatKeys = Object.keys(searchMat);
+                var searchMatVals = Object.values(searchMat);
+                for (var j = 0; j < searchMatKeys.length; j++) {
+                    var recurseMats = simpleMatsSearch(searchMatKeys[j], rows);
+                    if (recurseMats === undefined) {
+                        console.error("Item \"" + searchMatKeys[j] + 
+                            "\" could not be found to add to \"" + searchMtl + "\"");
+                        return mtlStats;
+                    }
+                    if (!recurseMats.isBlank()) {
+                        recurseMats.multQty(searchMatVals[j])
+                        mtlStats.addOther(recurseMats);
+                    }
+                }
+            }
+
+            var singleTime = parseFloat(rows[i].cells[2].innerText);
+            mtlStats.timeMax += singleTime;
+            mtlStats.goodValue += parseFloat(rows[i].cells[5].innerText);
+            if (mtlStats.timeMin < singleTime) {
+                mtlStats.timeMin = singleTime;
+            }
+            var singleLevel = parseFloat(rows[i].cells[10].innerText);
+            if (mtlStats.levelMin < singleLevel) {
+                mtlStats.levelMin = singleLevel;
+            }
+        }
+    }
+
+    if (mtlStats.isBlank()) {
+        return;
+    }
+
+    return mtlStats;
 }
 
 function addBldgMtl() {
@@ -260,7 +433,6 @@ function removeBldgCallback(respText) {
     for (var i = 0; i < rows.length; i++) {
         if (rows[i].innerHTML.includes(respText)) {
             rows[i].remove();
-            console.log(rows[i]);
         }
     }
 }
