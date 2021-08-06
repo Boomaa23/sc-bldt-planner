@@ -9,8 +9,14 @@
         <div class="header center">SimCity Buildit Planner</div>
         <table class="content-table">
             <tr>
-                <td class="bldg-queue section">
+                <td class="bldg-queue section center">
                     <div class="subheader center">Building Queue</div>
+                    <input type="text" name="bldg-mtl-in" id="bldg-mtl-in">
+                    <input type="number" name="bldg-qty-in" id="bldg-qty-in" value="1">
+                    <button type="submit" id="bldg-mtl-add" onclick="addBldgMtl()">Add Material</button>
+                    <button type="submit" id="bldg-submit" onclick="queueBldg()">Queue Building</button>
+                    <table id="bldg-staging" class="center out"></table>
+                    <table id="bldg-out" class="center out"></table>
                 </td>
                 <td class="storage section center">
                     <div class="subheader">Storage</div>
@@ -70,6 +76,39 @@
                     <td></td>
                     <td><button onclick="changeItemQty('+')">+</button></td>
                     <td><button onclick="changeItemQty('-')">-</button></td>
+                </tr>
+            </template>
+            <template id="bldg-staging-navheader">
+                <tr>
+                    <th></th>
+                    <th><a href="javascript:sortItems('bldg-staging', 1, false);" class="head-link">Name&#9654</a></th>
+                    <th><a href="javascript:sortItems('bldg-staging', 2, false);" class="head-link">Qty&#9654</a></th>
+                    <th></th>
+                </tr>
+            </template>
+            <template id="bldg-staging-row">
+                <tr>
+                    <td><img src="icons/" height="32" width="32"></td>
+                    <td></td>
+                    <td></td>
+                    <td><button onclick="removeBldgMtl(this)">X</button></td>
+                </tr>
+            </template>
+            <template id="bldg-queue-navheader">
+                <tr class="inner-table">
+                    <td></td>
+                    <th>Name</th>
+                    <th>Qty Have/Need</th>
+                </tr>
+            </template>
+            <template id="bldg-queue-all">
+                <td><button onclick="removeBldg(this)" class="bqa-btn">X</button></td>
+            </template>
+            <template id="bldg-queue-mtl">
+                <tr class="inner-table">
+                    <td><img src="icons/" height="32" width="32"></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </template>
         </div>

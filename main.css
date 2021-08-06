@@ -41,7 +41,7 @@ body {
     vertical-align: middle;
 }
 
-.out tr {
+.out tr:not(.inner-table) {
     border: 2px solid grey;
 }
 
