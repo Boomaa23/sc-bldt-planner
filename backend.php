@@ -27,6 +27,10 @@ if (isset($reqEndpoint) && isset($reqData)) {
         case "storage/add":
             storeItem($arrData);
             break;
+        case "items/get":
+            $allItems = loadJson(ITEMS_PATH);
+            print(json_encode($allItems));
+            break;
         case "items/search":
             searchItem($reqData);
             break;
@@ -100,7 +104,7 @@ function searchItem($name) {
     foreach ($allItems as $bldgName => $mtls) {
         foreach ($mtls as $mtlName => $material) {
             if (str_contains(strtolower($mtlName), strtolower($name))) {
-                $matchedItems[$bldgName][$mtlName] = $material;
+                array_push($matchedItems, $mtlName);
             }
         }
     }

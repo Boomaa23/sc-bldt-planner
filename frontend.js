@@ -1,26 +1,26 @@
 class MatStats {
     timeMin = 0;
     timeMax = 0;
-    goodValue = 0;
+    profit = 0;
     levelMin = 0;
 
     addOther(other) {
         this.timeMin += other.timeMin;
         this.timeMax += other.timeMax;
-        this.goodValue -= other.goodValue;
+        this.profit -= other.profit;
         this.levelMin = Math.min(this.levelMin, other.levelMin);
     }
 
     multQty(qty) {
         this.timeMin *= qty;
         this.timeMax *= qty;
-        this.goodValue *= qty;
+        this.profit *= qty;
     }
 
     isBlank() {
         return this.timeMin === 0 && 
             this.timeMax === 0 && 
-            this.goodValue === 0 && 
+            this.profit === 0 && 
             this.levelMin === 0;
     } 
 }
@@ -49,25 +49,105 @@ document.getElementById("bldg-qty-in").onkeypress = function(e) {
     }
 }
 
+var lastSearch = "-1";
+
 document.getElementById("craft-in").onkeyup = function(e) {
-    document.getElementById("search-submit").click();
+    var searchTerm = e.path[0].value;
+    if (lastSearch !== searchTerm) {
+        lastSearch = searchTerm;
+        document.getElementById("search-submit").click();
+    }
 }
 
 window.onload = function() {
-    backendRequest("items/search", "", initCrafting);
+    backendRequest("items/get", "", initSearchCallback);
     backendRequest("storage/get", "", function(respText) {
         storeItemCallback(respText);
         backendRequest("queue/get", "", queueBldgCallback);
     });
 }
 
-function initCrafting(respText) {
-    var craftOut = document.getElementById("craft-out");
-    const navHeader = document.getElementById("craft-navheader").content;
-    craftOut.appendChild(navHeader.cloneNode(true))
-    searchItemCallback(respText);
-    craftOut = document.getElementById("craft-out");
-    var rows = craftOut.querySelectorAll("tr");
+function makeSortHeader(headerTemplate, outTable) {
+    var navHeader = document.getElementById(headerTemplate).content.cloneNode(true);
+    var nhLinks = navHeader.querySelectorAll("a");
+    for (var i = 0; i < nhLinks.length; i++) {
+        var nhHref = nhLinks[i].getAttribute("href");
+        var ioParen = nhHref.indexOf("(");
+        nhLinks[i].setAttribute("href", nhHref.substring(0, ioParen + 1) + 
+            "\'" + outTable + "\', " + nhHref.substring(ioParen + 1));
+    }
+    return navHeader;
+}
+
+function setHeaderVisibility(valueMatch, levelClass, makeVisible = true) {
+    var ssh = document.getElementsByClassName(levelClass);
+    for (var i = 0; i < ssh.length; i++) {
+        if (ssh[i].innerText === valueMatch) {
+            if (makeVisible) {
+                ssh[i].classList.remove("hidden");
+            } else {
+                ssh[i].classList.add("hidden");
+            }
+            break;
+        }
+    }
+}
+
+function initSearchCallback(respText) {
+    var searchOut = document.getElementById("search-out");
+    searchOut.appendChild(makeSortHeader("search-and-craft-navheader", "search-out"));
+
+    const respJson = JSON.parse(respText);
+    const respKeys = Object.keys(respJson);
+
+    const itemTemplate = document.getElementById("craft-row").content;
+    for (var i = 0; i < respKeys.length; i++) {
+        const mtlVals = respJson[respKeys[i]];
+        const mtlKeys = Object.keys(mtlVals);
+        for (var j = 0; j < mtlKeys.length; j++) {
+            var itemOut = itemTemplate.cloneNode(true);
+            itemOut.querySelector("img").src = "data/icons/" + mtlKeys[j].toLowerCase().split(' ').join('') + ".png";
+            
+            const mtlVal = mtlVals[mtlKeys[j]];
+            var mats = mtlVal.mats;
+            if (typeof mats !== "undefined") {
+                mats = JSON.stringify(mats);
+                itemOut.querySelector("tr").setAttribute("mats", mats);
+            }
+
+            var itemCols = itemOut.querySelectorAll("td");
+            itemCols[1].innerText = mtlKeys[j];
+            itemCols[2].innerText = mtlVal.time;
+            
+            itemCols[5].innerText = mtlVal.value;
+            itemCols[11].innerText = mtlVal.level;
+            itemCols[13].innerText = respKeys[i];
+            
+            searchOut.appendChild(itemOut);
+        }
+    }
+
+    var rows = searchOut.querySelectorAll("tr");
+    for (var i = 1; i < rows.length; i++) {
+        var itemCols = rows[i].cells;
+        var matStats = simpleMatsSearch(itemCols[1].innerText, rows);
+        const value = parseFloat(itemCols[5].innerText);
+        const time = parseFloat(itemCols[2].innerText);
+        
+        itemCols[3].innerText = matStats.timeMin;
+        itemCols[4].innerText = matStats.timeMax;
+        itemCols[6].innerText = matStats.profit;
+
+        itemCols[7].innerText = roundTwo(value / time);
+        itemCols[8].innerText = roundTwo(value / matStats.timeMin);
+        itemCols[9].innerText = roundTwo(value / matStats.timeMax);
+        itemCols[10].innerText = roundTwo(matStats.profit / matStats.timeMax);
+
+        itemCols[12].innerText = matStats.levelMin;
+    }
+
+    searchOut = document.getElementById("search-out");
+    var rows = searchOut.querySelectorAll("tr");
     for (var k = 0; k < rows.length; k++) {
         rows[k].style = "display: none;";
     }
@@ -87,8 +167,7 @@ function storeItemCallback(respText) {
     const respKeys = Object.keys(respJson);
 
     if (storeOut.innerText === "" && respKeys.length != 0) {
-        const navHeader = document.getElementById("storage-navheader").content;
-        storeOut.appendChild(navHeader.cloneNode(true))
+        storeOut.appendChild(makeSortHeader("bldg-staging-and-storage-navheader", "storage-out"));
     }
 
     const itemTemplate = document.getElementById("storage-row").content;
@@ -152,17 +231,16 @@ function changeItemQty(dir, mtl) {
 }
 
 function searchItem() {
-    var craftOut = document.getElementById("craft-out");
-    var rows = craftOut.querySelectorAll("tr");
-    rows[0].style = "display: default;";
+    setHeaderVisibility("Search Output", "subsubheader");
     const itemName = document.getElementById("craft-in").value;
     backendRequest("items/search", itemName, searchItemCallback);
 }
 
 function searchItemCallback(respText) {
-    var craftOut = document.getElementById("craft-out");
-    var rows = craftOut.querySelectorAll("tr");
+    var searchOut = document.getElementById("search-out");
+    var rows = searchOut.querySelectorAll("tr");
 
+    rows[0].style = "display: default";
     for (var k = 1; k < rows.length; k++) {
         rows[k].style = "display: none;";
     }
@@ -174,84 +252,35 @@ function searchItemCallback(respText) {
     const respJson = JSON.parse(respText);
     const respKeys = Object.keys(respJson);
 
-    const itemTemplate = document.getElementById("craft-row").content;
     for (var i = 0; i < respKeys.length; i++) {
-        const mtlVals = respJson[respKeys[i]];
-        const mtlKeys = Object.keys(mtlVals);
-        for (var j = 0; j < mtlKeys.length; j++) {
-            var inTable = false;
-            for (var k = 1; k < rows.length; k++) {
-                if (rows[k].cells[1].innerText === mtlKeys[j]) {
-                    rows[k].style = "display: default;";
-                    inTable = true;
-                    break;
-                }
+        for (var k = 1; k < rows.length; k++) {
+            if (rows[k].cells[1].innerText === respJson[i]) {
+                rows[k].style = "display: default;";
+                inTable = true;
+                break;
             }
-            if (inTable) {
-                continue;
-            }
-            var itemOut = itemTemplate.cloneNode(true);
-            itemOut.querySelector("img").src = "data/icons/" + mtlKeys[j].toLowerCase().split(' ').join('') + ".png";
-            
-            const mtlVal = mtlVals[mtlKeys[j]];
-            var mats = mtlVal.mats;
-            if (typeof mats !== "undefined") {
-                mats = JSON.stringify(mats);
-                itemOut.querySelector("tr").setAttribute("mats", mats);
-            }
-
-            var itemCols = itemOut.querySelectorAll("td");
-            itemCols[1].innerText = mtlKeys[j];
-            itemCols[2].innerText = mtlVal.time;
-            
-            itemCols[5].innerText = mtlVal.value;
-            itemCols[10].innerText = mtlVal.level;
-            itemCols[12].innerText = respKeys[i];
-            
-            craftOut.appendChild(itemOut);
-            rows = craftOut.querySelectorAll("tr");
         }
-    }
-
-    rows = craftOut.querySelectorAll("tr");
-    for (var i = 1; i < rows.length; i++) {
-        var itemCols = rows[i].cells;
-        var matStats = simpleMatsSearch(itemCols[1].innerText, rows);
-        const value = parseFloat(itemCols[5].innerText);
-        const time = parseFloat(itemCols[2].innerText);
-        
-        itemCols[3].innerText = matStats.timeMin;
-        itemCols[4].innerText = matStats.timeMax;
-        itemCols[6].innerText = matStats.goodValue;
-
-        var gpmUnit = value / time;
-        gpmUnit = + gpmUnit.toFixed(2);
-        itemCols[7].innerText = gpmUnit;
-        var gpmMin = value / matStats.timeMin;
-        gpmMin = + gpmMin.toFixed(2);
-        itemCols[8].innerText = gpmMin;
-        var gpmMax = value / matStats.timeMax;
-        gpmMax = + gpmMax.toFixed(2);
-
-        itemCols[9].innerText = gpmMax;
-        itemCols[11].innerText = matStats.levelMin;
     }
 }
 
+function roundTwo(value) {
+    value = + value.toFixed(2);
+    return value;
+}
+
 function expandCraft(row) {
+    var craftOut = document.getElementById("craft-out");
+    craftOut.innerText = "";
+    craftOut.appendChild(makeSortHeader("search-and-craft-navheader", "craft-out"));
+    setHeaderVisibility("Crafting Output", "subsubheader");
+
     const rows = row.parentNode.querySelectorAll("tr");
     const targetItemName = row.cells[1].innerText;
-
-    for (var i = 1; i < rows.length; i++) {
-        rows[i].remove();
-    }
-
     const allMats = detailedMatsSearch(targetItemName, rows).reverse();
-    console.log(allMats);
-    var craftOut = document.getElementById("craft-out");
     for (var i = 0; i < allMats.length; i++) {
         craftOut.appendChild(allMats[i].cloneNode(true));
     }
+    window.location.href = "#craft-out";
 }
 
 function detailedMatsSearch(searchMtl, rows) {
@@ -268,7 +297,6 @@ function detailedMatsSearch(searchMtl, rows) {
                     for (var k = 0; k < searchMatVals[j]; k++) {
                         for (var l = 0; l < recurseMats.length; l++) {
                             mtls.push(recurseMats[l]);
-                            console.log(mtls.length);
                         }
                     }
                 }
@@ -309,7 +337,7 @@ function simpleMatsSearch(searchMtl, rows) {
 
             var singleTime = parseFloat(rows[i].cells[2].innerText);
             mtlStats.timeMax += singleTime;
-            mtlStats.goodValue += parseFloat(rows[i].cells[5].innerText);
+            mtlStats.profit += parseFloat(rows[i].cells[5].innerText);
             if (mtlStats.timeMin < singleTime) {
                 mtlStats.timeMin = singleTime;
             }
@@ -342,8 +370,7 @@ function addBldgMtlCallback(respText) {
     const itemQty = document.getElementById("bldg-qty-in").value;
 
     if (bldgStaging.innerText === "") {
-        const navHeader = document.getElementById("bldg-staging-navheader").content;
-        bldgStaging.appendChild(navHeader.cloneNode(true))
+        bldgStaging.appendChild(makeSortHeader("bldg-staging-and-storage-navheader", "bldg-staging"));
     }
 
     var itemOut = document.getElementById("bldg-staging-row").content.cloneNode(true);

@@ -14,43 +14,47 @@
                     <input type="text" name="bldg-mtl-in" id="bldg-mtl-in">
                     <input type="number" name="bldg-qty-in" id="bldg-qty-in" value="1" />
                     <button type="submit" id="bldg-mtl-add" onclick="addBldgMtl()">Add Material</button>
-                    <button type="submit" id="bldg-submit" onclick="queueBldg()">Queue Building</button>
-                    <table id="bldg-staging" class="center out"></table>
+                    <button type="submit" id="bldg-submit" onclick="queueBldg()">Queue Building</button><br /><br />
+                    <table id="bldg-staging" class="center out"></table><br />
                     <table id="bldg-out" class="center out"></table>
                 </td>
                 <td class="storage section center">
                     <div class="subheader">Storage</div>
                     <input type="text" name="storage-in" id="storage-in">
                     <input type="number" name="storage-qty-in" id="storage-qty-in" value="1">
-                    <button type="submit" id="storage-submit" onclick="storeItem()">Add</button>
+                    <button type="submit" id="storage-submit" onclick="storeItem()">Add</button><br /><br />
                     <table id="storage-out" class="center out"></table>
                 </td>
             </tr><tr>
                 <td class="crafting section center">
                     <div class="subheader">Crafting Lookup</div>
                     <input type="text" name="craft-in" id="craft-in">
-                    <button type="submit"id="search-submit" onclick="searchItem()">Search</button>
-                    <table id="craft-out" class="center out"></table>
+                    <button type="submit"id="search-submit" onclick="searchItem()">Search</button><br /><br />
+                    <div class="subsubheader hidden">Crafting Output</div>
+                    <table id="craft-out" class="center out"></table><br />
+                    <div class="subsubheader hidden">Search Output</div>
+                    <table id="search-out" class="center out"></table>
                 </td>
             </tr>
         </table>
 
         <div class="templates hidden">
-            <template id="craft-navheader">
+            <template id="search-and-craft-navheader">
                 <tr>
                     <th></th>
-                    <th><a href="javascript:sortItems('craft-out', 1, false);" class="head-link">Name&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 2, false);" class="head-link">Time (Unit)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 3, false);" class="head-link">Time (Min)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 4, false);" class="head-link">Time (Max)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 5, true);" class="head-link">Value <br />(Unit)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 6, true);" class="head-link">Value <br />(Good)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 7, true);" class="head-link">Value/<br />min (Unit)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 8, true);" class="head-link">Value/<br />min (Min)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 9, true);" class="head-link">Value/<br />min (Max)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 10, false);" class="head-link">Level (Unit)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 11, false);" class="head-link">Level (Min)&#9654</a></th>
-                    <th><a href="javascript:sortItems('craft-out', 12, false);" class="head-link">Building&#9654</a></th>
+                    <th><a href="javascript:sortItems(1, false);" class="head-link">Name&#9654</a></th>
+                    <th><a href="javascript:sortItems(2, false);" class="head-link">Time (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(3, false);" class="head-link">Time (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems(4, false);" class="head-link">Time (Max)&#9654</a></th>
+                    <th><a href="javascript:sortItems(5, true);" class="head-link">Value <br />(Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(6, true);" class="head-link">Value <br />(Profit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(7, true);" class="head-link">Value/<br />min (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(8, true);" class="head-link">Value/<br />min (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems(9, true);" class="head-link">Value/<br />min (Max)&#9654</a></th>
+                    <th><a href="javascript:sortItems(10, true);" class="head-link">Value/<br />min (Profit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(11, false);" class="head-link">Level (Unit)&#9654</a></th>
+                    <th><a href="javascript:sortItems(12, false);" class="head-link">Level (Min)&#9654</a></th>
+                    <th><a href="javascript:sortItems(13, false);" class="head-link">Building&#9654</a></th>
                     <th></th>
                 </tr>
             </template>
@@ -69,15 +73,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                </tr>
-            </template>
-            <template id="storage-navheader">
-                <tr>
-                    <th></th>
-                    <th><a href="javascript:sortItems('storage-out', 1, false);" class="head-link">Name&#9654</a></th>
-                    <th><a href="javascript:sortItems('storage-out', 2, false);" class="head-link">Qty&#9654</a></th>
-                    <th></th>
-                    <th></th>
+                    <td></td>
                 </tr>
             </template>
             <template id="storage-row">
@@ -89,11 +85,11 @@
                     <td><button onclick="changeItemQty('-')">-</button></td>
                 </tr>
             </template>
-            <template id="bldg-staging-navheader">
+            <template id="bldg-staging-and-storage-navheader">
                 <tr>
                     <th></th>
-                    <th><a href="javascript:sortItems('bldg-staging', 1, false);" class="head-link">Name&#9654</a></th>
-                    <th><a href="javascript:sortItems('bldg-staging', 2, false);" class="head-link">Qty&#9654</a></th>
+                    <th><a href="javascript:sortItems(1, false);" class="head-link">Name&#9654</a></th>
+                    <th><a href="javascript:sortItems(2, true);" class="head-link">Qty&#9654</a></th>
                     <th></th>
                 </tr>
             </template>

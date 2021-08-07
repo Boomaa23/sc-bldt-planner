@@ -35,7 +35,10 @@ body {
     padding: 10px;
 }
 
-#craft-out td, #craft-out th {
+#search-out td, 
+#search-out th,
+#craft-out td, 
+#craft-out th {
     padding: 4px;
 }
 
