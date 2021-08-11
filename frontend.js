@@ -2,13 +2,11 @@ class MatStats {
     timeMin = 0;
     timeMax = 0;
     profit = 0;
-    levelMin = 0;
 
     addOther(other) {
         this.timeMin += other.timeMin;
         this.timeMax += other.timeMax;
         this.profit -= other.profit;
-        this.levelMin = Math.min(this.levelMin, other.levelMin);
     }
 
     multQty(qty) {
@@ -20,8 +18,7 @@ class MatStats {
     isBlank() {
         return this.timeMin === 0 && 
             this.timeMax === 0 && 
-            this.profit === 0 && 
-            this.levelMin === 0;
+            this.profit === 0;
     } 
 }
 
@@ -126,7 +123,7 @@ function initSearchCallback(respText) {
             
             itemCols[5].innerText = mtlVal.value;
             itemCols[11].innerText = mtlVal.level;
-            itemCols[13].innerText = respKeys[i];
+            itemCols[12].innerText = respKeys[i];
             
             searchOut.appendChild(itemOut);
         }
@@ -147,8 +144,6 @@ function initSearchCallback(respText) {
         itemCols[8].innerText = roundTwo(value / matStats.timeMin);
         itemCols[9].innerText = roundTwo(value / matStats.timeMax);
         itemCols[10].innerText = roundTwo(matStats.profit / matStats.timeMax);
-
-        itemCols[12].innerText = matStats.levelMin;
     }
 
     searchOut = document.getElementById("search-out");
@@ -345,10 +340,6 @@ function simpleMatsSearch(searchMtl, rows) {
             mtlStats.profit += parseFloat(rows[i].cells[5].innerText);
             if (mtlStats.timeMin < singleTime) {
                 mtlStats.timeMin = singleTime;
-            }
-            var singleLevel = parseFloat(rows[i].cells[10].innerText);
-            if (mtlStats.levelMin < singleLevel) {
-                mtlStats.levelMin = singleLevel;
             }
         }
     }

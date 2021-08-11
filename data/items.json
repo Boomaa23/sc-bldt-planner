@@ -569,7 +569,7 @@
                 "Hammer": 1
             },
             "time": 20,
-            "level": 1,
+            "level": 6,
             "value": 120
         },
         "Holiday Decorations": {
@@ -577,7 +577,7 @@
                 "Seeds": 3
             },
             "time": 60,
-            "level": 1,
+            "level": 6,
             "value": 175
         },
         "Candy Cane": {
@@ -585,7 +585,7 @@
                 "Sugar and Spices": 3
             },
             "time": 180,
-            "level": 1,
+            "level": 6,
             "value": 350
         },
         "Gingerbread Cookies": {
@@ -595,7 +595,7 @@
                 "Cooking Utensils": 1
             },
             "time": 75,
-            "level": 1,
+            "level": 6,
             "value": 750
         },
         "Holiday Ornament": {
@@ -604,7 +604,7 @@
                 "Paint": 1
             },
             "time": 45,
-            "level": 1,
+            "level": 6,
             "value": 920
         }
     },
