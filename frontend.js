@@ -67,6 +67,11 @@ window.onload = function() {
     });
 }
 
+function useDefaultImage(elem) {
+    elem.onerror = null;
+    elem.src = "data/icons/default.png";
+}
+
 function makeSortHeader(headerTemplate, outTable) {
     var navHeader = document.getElementById(headerTemplate).content.cloneNode(true);
     var nhLinks = navHeader.querySelectorAll("a");

@@ -397,7 +397,7 @@
             },
             "time": 60,
             "level": 33,
-            "value": 750 
+            "value": 750
         }
     },
     "Fashion Store": {
@@ -405,11 +405,237 @@
             "mats": {
                 "Textiles": 2,
                 "Measuring Tape": 1
-            
             },
             "time": 60,
             "level": 19,
-            "value": 600 
+            "value": 600
+        },
+        "Shoes": {
+            "mats": {
+                "Plastic": 1,
+                "Textiles": 2,
+                "Glue": 1
+            },
+            "time": 75,
+            "level": 21,
+            "value": 980
+        },
+        "Watch": {
+            "mats": {
+                "Plastic": 2,
+                "Chemicals": 1,
+                "Glass": 1
+            },
+            "time": 90,
+            "level": 22,
+            "value": 580
+        },
+        "Business Suits": {
+            "mats": {
+                "Textiles": 3,
+                "Glue": 1,
+                "Measuring Tape": 1
+            },
+            "time": 210,
+            "level": 32,
+            "value": 1170
+        },
+        "Backpack": {
+            "mats": {
+                "Plastic": 2,
+                "Textiles": 2,
+                "Measuring Tape": 1
+            },
+            "time": 150,
+            "level": 34,
+            "value": 430
+        }
+    },
+    "Fast Food Restaurant": {
+        "Ice Cream Sandwich": {
+            "mats": {
+                "Cream": 1,
+                "Bread Roll": 1
+            },
+            "time": 14,
+            "level": 25,
+            "value": 2560
+        },
+        "Pizza": {
+            "mats": {
+                "Flour Bag": 1,
+                "Cheese": 1,
+                "Beef": 1
+            },
+            "time": 24,
+            "level": 28,
+            "value": 2560
+        },
+        "Burgers": {
+            "mats": {
+                "Beef": 1,
+                "Bread Roll": 1,
+                "BBQ Grill": 1
+            },
+            "time": 35,
+            "level": 31,
+            "value": 3620
+        },
+        "Cheese Fries": {
+            "mats": {
+                "Vegetables": 1,
+                "Cheese": 1
+            },
+            "time": 20,
+            "level": 33,
+            "value": 1050
+        },
+        "Lemonade Bottle": {
+            "mats": {
+                "Sugar and Spices": 2,
+                "Glass": 2,
+                "Fruit and Berries": 1
+            },
+            "time": 60,
+            "level": 37,
+            "value": 1690
+        },
+        "Popcorn": {
+            "mats": {
+                "Corn": 2,
+                "Microwave Oven": 1
+            },
+            "time": 30,
+            "level": 43,
+            "value": 1250
+        }
+    },
+    "Home Appliances": {
+        "BBQ Grill": {
+            "mats": {
+                "Metal": 3,
+                "Cooking Utensils": 1
+            },
+            "time": 165,
+            "level": 29,
+            "value": 530
+        },
+        "Refrigerator": {
+            "mats": {
+                "Plastic": 2,
+                "Chemicals": 2,
+                "Electrical Components": 2
+            },
+            "time": 210,
+            "level": 35,
+            "value": 1060
+        },
+        "Lighting System": {
+            "mats": {
+                "Chemicals": 1,
+                "Glass": 1,
+                "Electrical Components": 1
+            },
+            "time": 105,
+            "level": 36,
+            "value": 890
+        },
+        "TV": {
+            "mats": {
+                "Plastic": 2,
+                "Glass": 2,
+                "Electrical Components": 2
+            },
+            "time": 150,
+            "level": 38,
+            "value": 1280
+        },
+        "Microwave Oven": {
+            "mats": {
+                "Metal": 4,
+                "Glass": 1,
+                "Electrical Components": 1
+            },
+            "time": 120,
+            "level": 42,
+            "value": 480
+        }
+    },
+    "Santa's Workshop": {
+        "Toy Horse": {
+            "mats": {
+                "Wood": 1,
+                "Nails": 1,
+                "Hammer": 1
+            },
+            "time": 20,
+            "level": 1,
+            "value": 120
+        },
+        "Holiday Decorations": {
+            "mats": {
+                "Seeds": 3
+            },
+            "time": 60,
+            "level": 1,
+            "value": 175
+        },
+        "Candy Cane": {
+            "mats": {
+                "Sugar and Spices": 3
+            },
+            "time": 180,
+            "level": 1,
+            "value": 350
+        },
+        "Gingerbread Cookies": {
+            "mats": {
+                "Flour Bag": 1,
+                "Sugar and Spices": 1,
+                "Cooking Utensils": 1
+            },
+            "time": 75,
+            "level": 1,
+            "value": 750
+        },
+        "Holiday Ornament": {
+            "mats": {
+                "Glass": 2,
+                "Paint": 1
+            },
+            "time": 45,
+            "level": 1,
+            "value": 920
+        }
+    },
+    "Eco Shop": {
+        "Reusable Bag": {
+            "mats": {
+                "Recycled Fabric": 2
+            },
+            "time": 20,
+            "level": 25,
+            "value": 120
+        },
+        "Ecological Shoes": {
+            "mats": {
+                "Recycled Fabric": 2,
+                "Glue": 1,
+                "Measuring Tape": 1
+            },
+            "time": 120,
+            "level": 30,
+            "value": 750
+        },
+        "Yoga Mat": {
+            "mats": {
+                "Recycled Fabric": 3,
+                "Home Textiles": 2,
+                "Paint": 1
+            },
+            "time": 240,
+            "level": 35,
+            "value": 2000
         }
     }
 }

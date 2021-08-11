@@ -60,7 +60,7 @@
             </template>
             <template id="craft-row">
                 <tr onclick="expandCraft(this)">
-                    <td><img src="icons/" height="32" width="32"></td>
+                    <td><img src="icons/" onerror="useDefaultImage(this);" height="32" width="32"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -78,7 +78,7 @@
             </template>
             <template id="storage-row">
                 <tr>
-                    <td><img src="icons/" height="32" width="32"></td>
+                    <td><img src="icons/" onerror="useDefaultImage(this);" height="32" width="32"></td>
                     <td></td>
                     <td></td>
                     <td><button onclick="changeItemQty('+')">+</button></td>
@@ -95,7 +95,7 @@
             </template>
             <template id="bldg-staging-row">
                 <tr>
-                    <td><img src="icons/" height="32" width="32"></td>
+                    <td><img src="icons/" onerror="useDefaultImage(this);" height="32" width="32"></td>
                     <td></td>
                     <td></td>
                     <td><button onclick="removeBldgMtl(this)">X</button></td>
