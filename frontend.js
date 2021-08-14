@@ -358,6 +358,7 @@ function addBldgMtl() {
 
 function addBldgMtlCallback(respText) {
     if (respText === "false") {
+        alert("Invalid material");
         return;
     }
 
@@ -370,7 +371,7 @@ function addBldgMtlCallback(respText) {
     }
 
     var itemOut = document.getElementById("bldg-staging-row").content.cloneNode(true);
-    itemOut.querySelector("img").src = "data/icons/" + itemName + ".png";
+    itemOut.querySelector("img").src = "data/icons/" + itemName.toLowerCase().split(' ').join('') + ".png";
 
     var itemCols = itemOut.querySelectorAll("td");
     itemCols[1].innerText = itemName;

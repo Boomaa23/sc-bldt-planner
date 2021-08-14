@@ -103,7 +103,7 @@ function searchItem($name) {
     $allItems = loadJson(ITEMS_PATH);
     foreach ($allItems as $bldgName => $mtls) {
         foreach ($mtls as $mtlName => $material) {
-            if (str_contains(strtolower($mtlName), strtolower($name))) {
+            if (empty($name) || strpos(strtolower($mtlName), strtolower($name)) !== false) {
                 array_push($matchedItems, $mtlName);
             }
         }
