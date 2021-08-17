@@ -56,6 +56,41 @@
             "value": 160
         }
     },
+    "Oil Plant": {
+        "Crude Oil": {
+            "time": 6,
+            "level": 25,
+            "value": 30
+        }     
+    },
+    "Green Factory": {
+        "Recycled Fabric": {
+            "time": 6,
+            "level": 25,
+            "value": 30
+        }
+    },
+    "Mulberry Grove": {
+        "Silk": {
+            "time": 6,
+            "level": 25,
+            "value": 30
+        }
+    },
+    "Coconut Farm": {
+        "Coconut": {
+            "time": 6,
+            "level": 25,
+            "value": 30
+        }
+    },
+    "Fishery": {
+        "Fish": {
+            "time": 6,
+            "level": 25,
+            "value": 30
+        }
+    },    
     "Building Supplies Store": {
         "Nails": {
             "mats": {
@@ -636,6 +671,125 @@
             "time": 240,
             "level": 35,
             "value": 2000
+        }
+    },
+    "Car Parts": {
+        "Motor Oil": {
+            "mats": {
+                "Crude Oil": 2
+            },
+            "time": 20,
+            "level": 25,
+            "value": 120
+        },
+        "Car Tire": {
+            "mats": {
+                "Crude Oil": 2,
+                "Glue": 1,
+                "Nails": 3
+            },
+            "time": 120,
+            "level": 30,
+            "value": 950
+        },
+        "Engine": {
+            "mats": {
+                "Electrical Components": 1,
+                "Drill": 1,
+                "Nails": 3
+            },
+            "time": 240,
+            "level": 35,
+            "value": 2000
+        }  
+    },
+    "Silk Store": {
+        "String": {
+            "mats": {
+                "Silk": 2
+            },
+            "time": 20,
+            "level": 25,
+            "value": 120
+        },
+        "Fan": {
+            "mats": {
+                "Silk": 2,
+                "Wood": 1,
+                "Glue": 2
+            },
+            "time": 150,
+            "level": 30,
+            "value": 1100
+        },
+        "Robe": {
+            "mats": {
+                "Silk": 3,
+                "Paint": 2,
+                "Home Textiles": 1
+            },
+            "time": 240,
+            "level": 35,
+            "value": 2000
+        }
+    },
+    "Tropical Products Store": {
+        "Coconut Oil": {
+            "mats": {
+                "Coconut": 2
+            },
+            "time": 20,
+            "level": 25,
+            "value": 120
+        },
+        "Face Cream": {
+            "mats": {
+                "Coconut Oil": 2,
+                "Chemicals": 2
+            },
+            "time": 90,
+            "level": 30,
+            "value": 850
+        },
+        "Tropical Drink": {
+            "mats": {
+                "Coconut": 2,
+                "Fruit and Berries": 2,
+                "Sugar and Spices": 1
+            },
+            "time": 250,
+            "level": 35,
+            "value": 2400
+        }
+    },
+    "Fish Marketplace": {
+        "Canned Fish": {
+            "mats": {
+                "Fish": 1,
+                "Metal": 1
+            },
+            "time": 20,
+            "level": 25,
+            "value": 120
+        },
+        "Fish Soup": {
+            "mats": {
+                "Vegetables": 1,
+                "Fish": 2,
+                "Cooking Utensils": 2
+            },
+            "time": 120,
+            "level": 30,
+            "value": 400
+        },
+        "Salmon Sandwich": {
+            "mats": {
+                "Bread Roll": 1,
+                "Fish": 2
+            },
+            "time": 180,
+            "level": 35,
+            "value": 2200
         }
     }
 }
