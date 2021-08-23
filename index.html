@@ -22,7 +22,8 @@
                     <div class="subheader">Storage</div>
                     <input type="text" name="storage-in" id="storage-in">
                     <input type="number" name="storage-qty-in" id="storage-qty-in" value="1">
-                    <button type="submit" id="storage-submit" onclick="storeItem()">Add</button><br /><br />
+                    <button type="submit" id="storage-submit" onclick="storeItem(false)">Add</button>
+                    <button type="submit" id="storage-submit" onclick="storeItem(true)">Set</button><br /><br />
                     <table id="storage-out" class="center out"></table>
                 </td>
             </tr><tr>
@@ -79,8 +80,8 @@
                     <td><img src="icons/" onerror="useDefaultImage(this);" height="32" width="32"></td>
                     <td></td>
                     <td></td>
-                    <td><button onclick="changeItemQty('+')">+</button></td>
-                    <td><button onclick="changeItemQty('-')">-</button></td>
+                    <td><button onclick="changeItemQty('1')">+</button></td>
+                    <td><button onclick="changeItemQty('-1')">-</button></td>
                 </tr>
             </template>
             <template id="bldg-staging-and-storage-navheader">

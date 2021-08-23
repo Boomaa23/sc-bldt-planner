@@ -24,8 +24,11 @@ if (isset($reqEndpoint) && isset($reqData)) {
             }
             print(json_encode($storage));
             break;
-        case "storage/add":
-            storeItem($arrData);
+        case "storage/set":
+            storeItem($arrData, true);
+            break;
+        case "storage/change":
+            storeItem($arrData, false);
             break;
         case "storage/hasBldgMtls":
             checkBldgMtls($reqData);
@@ -54,29 +57,16 @@ if (isset($reqEndpoint) && isset($reqData)) {
     }
 }
 
-function storeItem($data) {
+function storeItem($data, $setQty) {
     if (materialExists(loadJson(ITEMS_PATH), $data[0])) {
         $storage = loadJson(STORAGE_PATH);
-        if (!isset($data[1])) {
-            $data[1] = 1;
-        }
-        if (isset($storage[$data[0]])) {
-            if ($data[1] === "+") {
-                $storage[$data[0]]++;
-            } else if ($data[1] === "-") {
-                $storage[$data[0]]--;
-            } else if ((int) $data[1] < 0) {
-                $storage[$data[0]] += (int) $data[1];
-            } else {
-                $storage[$data[0]] = (int) $data[1];
-            }
-            if ($storage[$data[0]] === 0) {
-                unset($storage[$data[0]]);
-            }
-        } else if ($data[1] === "+") {
-            $storage[$data[0]] = 1;
-        } else {
+        if ($setQty || !isset($storage[$data[0]])) {
             $storage[$data[0]] = (int) $data[1];
+        } else {
+            $storage[$data[0]] += (int) $data[1];
+        }
+        if ($storage[$data[0]] == 0) {
+            unset($storage[$data[0]]);
         }
         saveJson(STORAGE_PATH, $storage);
 

@@ -153,10 +153,11 @@ function initSearchCallback(respText) {
     }
 }
 
-function storeItem() {
+function storeItem(setQty) {
     const itemName = document.getElementById("storage-in").value;
     const itemQty = document.getElementById("storage-qty-in").value;
-    backendRequest("storage/add", [ itemName, itemQty ], storeItemCallback);
+    const endpoint = setQty ? "storage/set" : "storage/change";
+    backendRequest(endpoint, [ itemName, itemQty ], storeItemCallback);
 }
 
 function storeItemCallback(respText) {
@@ -227,7 +228,7 @@ function storeItemCallback(respText) {
 }
 
 function changeItemQty(dir, mtl) {
-    backendRequest("storage/add", [ mtl, dir ], storeItemCallback);
+    backendRequest("storage/change", [ mtl, dir ], storeItemCallback);
 }
 
 function searchItem() {
@@ -481,7 +482,7 @@ function removeBldgCallback(respText, useMtls) {
                 var cells = rows[i].querySelectorAll("tr")[1].querySelectorAll("td");
                 var itemName = cells[1].innerText;
                 var itemQty = "-" + cells[2].innerText.slice(-1);
-                backendRequest("storage/add", [ itemName, itemQty  ], storeItemCallback);
+                backendRequest("storage/change", [ itemName, itemQty  ], storeItemCallback);
             }
             rows[i].remove();
         }
