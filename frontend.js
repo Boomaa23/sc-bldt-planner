@@ -431,7 +431,10 @@ function queueBldgCallback(respText) {
         }
         
         var rmBtnDoc = document.getElementById("bldg-queue-all").content.cloneNode(true);
-        rmBtnDoc.querySelector("button").setAttribute("uuid", respKeys[i]);
+        var btnAttr = rmBtnDoc.querySelectorAll("button");
+        for (var j = 0; j < btnAttr.length; j++) {
+            btnAttr[j].setAttribute("uuid", respKeys[i]);
+        }
         bldg.appendChild(rmBtnDoc);
         
         queue.appendChild(bldg);
@@ -449,13 +452,37 @@ function localStorageSearch(itemName) {
 }
 
 function removeBldg(btnElem) {
-    backendRequest("queue/remove", btnElem.getAttribute("uuid"), removeBldgCallback);
+    backendRequest("queue/remove", btnElem.getAttribute("uuid"), function(respText) {
+        removeBldgCallback(respText, false);
+    });
 }
 
-function removeBldgCallback(respText) {
+function buildBldg(btnElem) {
+    var uuid = btnElem.getAttribute("uuid");
+    backendRequest("storage/hasBldgMtls", uuid, function(hasMtls) {
+        if (hasMtls) {
+            backendRequest("queue/remove", uuid, function(respText) {
+                removeBldgCallback(respText, true);
+            });
+        } else {
+            alert("Not enough stored materials to build " + uuid);
+        }
+    });
+}
+
+function removeBldgCallback(respText, useMtls) {
     var rows = document.getElementById("bldg-out").getElementsByTagName("tr");
     for (var i = 0; i < rows.length; i++) {
+        if (rows[i].classList.contains("inner-table")) {
+            continue;
+        }
         if (rows[i].innerHTML.includes(respText)) {
+            if (useMtls) {
+                var cells = rows[i].querySelectorAll("tr")[1].querySelectorAll("td");
+                var itemName = cells[1].innerText;
+                var itemQty = "-" + cells[2].innerText.slice(-1);
+                backendRequest("storage/add", [ itemName, itemQty  ], storeItemCallback);
+            }
             rows[i].remove();
         }
     }
@@ -503,13 +530,13 @@ function sortItems(tableId, colIdx, desc) {
 }
 
 function backendRequest(endpoint, data, callback = null, doLog = true) {
-    console.log("\n");
     var xhr = new XMLHttpRequest();
     var url = "backend.php?endpoint=" + encodeURIComponent(endpoint);
     if (data !== null) {
         url += "&data=" + btoa(encodeURIComponent(data));
     }
     if (doLog) {
+        console.log("\n");
         console.log(endpoint + ": " + data);
         console.log(url);
     }

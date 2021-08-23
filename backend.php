@@ -27,6 +27,9 @@ if (isset($reqEndpoint) && isset($reqData)) {
         case "storage/add":
             storeItem($arrData);
             break;
+        case "storage/hasBldgMtls":
+            checkBldgMtls($reqData);
+            break;
         case "items/get":
             $allItems = loadJson(ITEMS_PATH);
             print(json_encode($allItems));
@@ -62,6 +65,8 @@ function storeItem($data) {
                 $storage[$data[0]]++;
             } else if ($data[1] === "-") {
                 $storage[$data[0]]--;
+            } else if ((int) $data[1] < 0) {
+                $storage[$data[0]] += (int) $data[1];
             } else {
                 $storage[$data[0]] = (int) $data[1];
             }
@@ -135,6 +140,20 @@ function queueRemove($uuid) {
     unset($bldgQueue[$uuid]);
     saveJson(QUEUE_PATH, $bldgQueue);
     print($uuid);
+}
+
+function checkBldgMtls($uuid) {
+    $storage = loadJson(STORAGE_PATH);
+    $bldgQueue = loadJson(QUEUE_PATH);
+    $bldg = $bldgQueue[$uuid];
+
+    foreach ($bldg as $bldgMtl => $bldgQty) {
+        if (!isset($storage[$bldgMtl]) || ((int) $storage[$bldgMtl]) < ((int) $bldgQty)) {
+            print(false);
+            return;
+        }
+    }
+    print(true);
 }
 
 function loadJson($path) {
