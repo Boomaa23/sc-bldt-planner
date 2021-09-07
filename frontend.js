@@ -481,7 +481,8 @@ function removeBldgCallback(respText, useMtls) {
             if (useMtls) {
                 var cells = rows[i].querySelectorAll("tr")[1].querySelectorAll("td");
                 var itemName = cells[1].innerText;
-                var itemQty = "-" + cells[2].innerText.slice(-1);
+                var qtyText = cells[2].innerText
+                var itemQty = "-" + qtyText.substring(qtyText.indexOf("/") + 2);
                 backendRequest("storage/change", [ itemName, itemQty  ], storeItemCallback);
             }
             rows[i].remove();
