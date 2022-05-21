@@ -791,5 +791,70 @@
             "level": 35,
             "value": 2200
         }
+    },
+    "Special Items": {
+        "Storage Camera": {
+            "level": 1
+        },
+        "Storage Lock": {
+            "level": 1
+        },
+        "Storage Bars": {
+            "level": 1
+        },
+        "Dozer Exhaust": {
+            "level": 10
+        },
+        "Dozer Wheel": {
+            "level": 10
+        },
+        "Dozer Blade": {
+            "level": 10
+        },
+        "Ship's Wheel": {
+            "level": 15
+        },
+        "Scuba Mask": {
+            "level": 15
+        },
+        "Lifebelt": {
+            "level": 15
+        },
+        "Compass": {
+            "level": 23
+        },
+        "Snowboard": {
+            "level": 23
+        },
+        "Winter Hat": {
+            "level": 23
+        },
+        "Vu's Battery": {},
+        "Vu's Gloves": {},
+        "Vu's Remote": {},
+        "Fashion Clothes": {},
+        "La Baguette": {},
+        "Luxury Bag": {},
+        "Bobby's Helmet": {},
+        "Teapot": {},
+        "Telephone Box": {},
+        "Bonsai Tree": {},
+        "Lantern": {},
+        "Lucky Cat": {}
+    },
+    "Omega Items": {
+        "Omega I": {},
+        "Omega II": {},
+        "Omega III": {},
+        "Solar Panels": {},
+        "Telepod": {},
+        "Ultrawave Oven": {},
+        "Jet Pack": {},
+        "Hoverboard": {},
+        "Holoprojector": {},
+        "Cryofusion Chamber": {},
+        "Robopet": {},
+        "4-D Printer": {},
+        "Antigravity Boots": {}
     }
 }

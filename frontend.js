@@ -95,6 +95,14 @@ function setHeaderVisibility(valueMatch, levelClass, makeVisible = true) {
     }
 }
 
+function sanitizeValue(value) {
+    if (typeof(value) === 'undefined' || isNaN(value) || parseFloat(value) === 0) {
+        return ""
+    } else {
+        return value;
+    }
+}
+
 function initSearchCallback(respText) {
     var searchOut = document.getElementById("search-out");
     searchOut.appendChild(makeSortHeader("search-and-craft-navheader", "search-out"));
@@ -108,7 +116,8 @@ function initSearchCallback(respText) {
         const mtlKeys = Object.keys(mtlVals);
         for (var j = 0; j < mtlKeys.length; j++) {
             var itemOut = itemTemplate.cloneNode(true);
-            itemOut.querySelector("img").src = "data/icons/" + mtlKeys[j].toLowerCase().split(' ').join('') + ".png";
+            var mtlImgName = mtlKeys[j].toLowerCase().split(' ').join('').replace('\'', '').replace('-', '');
+            itemOut.querySelector("img").src = "data/icons/" + mtlImgName + ".png";
             
             const mtlVal = mtlVals[mtlKeys[j]];
             var mats = mtlVal.mats;
@@ -119,10 +128,10 @@ function initSearchCallback(respText) {
 
             var itemCols = itemOut.querySelectorAll("td");
             itemCols[1].innerText = mtlKeys[j];
-            itemCols[2].innerText = mtlVal.time;
+            itemCols[2].innerText = sanitizeValue(mtlVal.time);
             
-            itemCols[5].innerText = mtlVal.value;
-            itemCols[11].innerText = mtlVal.level;
+            itemCols[5].innerText = sanitizeValue(mtlVal.value);
+            itemCols[11].innerText = sanitizeValue(mtlVal.level);
             itemCols[12].innerText = respKeys[i];
             
             searchOut.appendChild(itemOut);
@@ -136,14 +145,14 @@ function initSearchCallback(respText) {
         const value = parseFloat(itemCols[5].innerText);
         const time = parseFloat(itemCols[2].innerText);
         
-        itemCols[3].innerText = matStats.timeMin;
-        itemCols[4].innerText = matStats.timeMax;
-        itemCols[6].innerText = matStats.profit;
+        itemCols[3].innerText = sanitizeValue(matStats.timeMin);
+        itemCols[4].innerText = sanitizeValue(matStats.timeMax);
+        itemCols[6].innerText = sanitizeValue(matStats.profit);
 
-        itemCols[7].innerText = roundTwo(value / time);
-        itemCols[8].innerText = roundTwo(value / matStats.timeMin);
-        itemCols[9].innerText = roundTwo(value / matStats.timeMax);
-        itemCols[10].innerText = roundTwo(matStats.profit / matStats.timeMax);
+        itemCols[7].innerText = sanitizeValue(roundTwo(value / time));
+        itemCols[8].innerText = sanitizeValue(roundTwo(value / matStats.timeMin));
+        itemCols[9].innerText = sanitizeValue(roundTwo(value / matStats.timeMax));
+        itemCols[10].innerText = sanitizeValue(roundTwo(matStats.profit / matStats.timeMax));
     }
 
     searchOut = document.getElementById("search-out");
@@ -253,8 +262,13 @@ function searchItemCallback(respText) {
     const respJson = JSON.parse(respText);
     const respKeys = Object.keys(respJson);
 
+    var showMisc = document.getElementById("search-show-misc").checked;
     for (var i = 0; i < respKeys.length; i++) {
         for (var k = 1; k < rows.length; k++) {
+            var bldgName = rows[k].cells[12].innerText
+            if (!showMisc && (bldgName === "Special Items" || bldgName === "Omega Items")) {
+                continue;
+            }
             if (rows[k].cells[1].innerText === respJson[i]) {
                 rows[k].style = "display: default;";
                 inTable = true;

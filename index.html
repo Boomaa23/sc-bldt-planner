@@ -30,9 +30,11 @@
                 <td class="crafting section center">
                     <div class="subheader">Crafting Lookup</div>
                     <input type="text" name="craft-in" id="craft-in">
-                    <button type="submit"id="search-submit" onclick="searchItem()">Search</button><br /><br />
+                    <button type="submit" id="search-submit" onclick="searchItem()">Search</button><br />
+                    <input type="checkbox" id="search-show-misc" onclick="searchItem()"></input>
+                    <label for="search-show-misc">Show Special & Omega Items</label><br />
                     <div class="subsubheader hidden">Crafting Output</div>
-                    <table id="craft-out" class="center out"></table><br />
+                    <table id="craft-out" class="center out"></table>
                     <div class="subsubheader hidden">Search Output</div>
                     <table id="search-out" class="center out"></table>
                 </td>
