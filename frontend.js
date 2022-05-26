@@ -69,6 +69,11 @@ function useDefaultImage(elem) {
     elem.src = "data/icons/default.png";
 }
 
+function parseMtlIconLoc(mtlRaw) {
+    var mtlImgName = mtlRaw.toLowerCase().split(' ').join('').replace('\'', '').replace('-', '');
+    return "data/icons/" + mtlImgName + ".png";
+}
+
 function makeSortHeader(headerTemplate, outTable) {
     var navHeader = document.getElementById(headerTemplate).content.cloneNode(true);
     var nhLinks = navHeader.querySelectorAll("a");
@@ -97,7 +102,7 @@ function setHeaderVisibility(valueMatch, levelClass, makeVisible = true) {
 
 function sanitizeValue(value) {
     if (typeof(value) === 'undefined' || isNaN(value) || parseFloat(value) === 0) {
-        return ""
+        return "";
     } else {
         return value;
     }
@@ -116,8 +121,7 @@ function initSearchCallback(respText) {
         const mtlKeys = Object.keys(mtlVals);
         for (var j = 0; j < mtlKeys.length; j++) {
             var itemOut = itemTemplate.cloneNode(true);
-            var mtlImgName = mtlKeys[j].toLowerCase().split(' ').join('').replace('\'', '').replace('-', '');
-            itemOut.querySelector("img").src = "data/icons/" + mtlImgName + ".png";
+            itemOut.querySelector("img").src = parseMtlIconLoc(mtlKeys[j]);
             
             const mtlVal = mtlVals[mtlKeys[j]];
             var mats = mtlVal.mats;
@@ -170,6 +174,10 @@ function storeItem(setQty) {
 }
 
 function storeItemCallback(respText) {
+    if (respText === "false") {
+        alert("invalid material");
+        return;
+    }
     var storeOut = document.getElementById("storage-out");
     const bldgOut = document.getElementById("bldg-out");
 
@@ -214,7 +222,7 @@ function storeItemCallback(respText) {
             continue;
         }
         var itemOut = itemTemplate.cloneNode(true);
-        itemOut.querySelector("img").src = "data/icons/" + respKeys[i].toLowerCase().split(' ').join('') + ".png";
+        itemOut.querySelector("img").src = parseMtlIconLoc(respKeys[i]);
         
         var itemCols = itemOut.querySelectorAll("td");
         itemCols[1].innerText = respKeys[i];
@@ -223,7 +231,7 @@ function storeItemCallback(respText) {
         var qtyBtns = itemOut.querySelectorAll("button");
         for (var j = 0; j < qtyBtns.length; j++) {
             var btnOc = qtyBtns[j].getAttribute("onclick");
-            qtyBtns[j].setAttribute("onclick", btnOc.substring(0, btnOc.length - 1) + ", '" + respKeys[i] + "');");
+            qtyBtns[j].setAttribute("onclick", btnOc.substring(0, btnOc.length - 1) + ", '" + respKeys[i].replace("\'", "\\'") + "');");
         }
 
         storeOut.appendChild(itemOut);
@@ -386,7 +394,7 @@ function addBldgMtlCallback(respText) {
     }
 
     var itemOut = document.getElementById("bldg-staging-row").content.cloneNode(true);
-    itemOut.querySelector("img").src = "data/icons/" + itemName.toLowerCase().split(' ').join('') + ".png";
+    itemOut.querySelector("img").src = parseMtlIconLoc(itemName);
 
     var itemCols = itemOut.querySelectorAll("td");
     itemCols[1].innerText = itemName;
@@ -437,7 +445,7 @@ function queueBldgCallback(respText) {
         const mtlKeys = Object.keys(mtlJson);
         for (var j = 0; j < mtlKeys.length; j++) {
             var mtl = mtlRowTemplate.cloneNode(true);
-            mtl.querySelector("img").src = "data/icons/" + mtlKeys[j].toLowerCase().split(' ').join('') + ".png";
+            mtl.querySelector("img").src = parseMtlIconLoc(mtlKeys[j]);
 
             var itemCols = mtl.querySelectorAll("td");
             itemCols[1].innerText = mtlKeys[j];
@@ -493,11 +501,14 @@ function removeBldgCallback(respText, useMtls) {
         }
         if (rows[i].innerHTML.includes(respText)) {
             if (useMtls) {
-                var cells = rows[i].querySelectorAll("tr")[1].querySelectorAll("td");
-                var itemName = cells[1].innerText;
-                var qtyText = cells[2].innerText
-                var itemQty = "-" + qtyText.substring(qtyText.indexOf("/") + 2);
-                backendRequest("storage/change", [ itemName, itemQty  ], storeItemCallback);
+                var bldgRows = rows[i].querySelectorAll("tr");
+                for (var j = 1; j < bldgRows.length; j++) {
+                    var cells = bldgRows[j].querySelectorAll("td");
+                    var itemName = cells[1].innerText;
+                    var qtyText = cells[2].innerText
+                    var itemQty = "-" + qtyText.substring(qtyText.indexOf("/") + 2);
+                    backendRequest("storage/change", [ itemName, itemQty  ], storeItemCallback);
+                }
             }
             rows[i].remove();
         }
